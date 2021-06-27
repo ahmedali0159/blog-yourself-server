@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const ObjectId = require("mongodb").ObjectId;
 const bodyParser = require("body-parser");
 require("dotenv").config();
 const port = process.env.PORT || 5000;
@@ -29,9 +30,18 @@ client.connect((err) => {
   app.get('/events', (req, res)=> {
       postCollection.find()
       .toArray((err, items) => {
-          res.send(items)
+          res.send(items);
           console.log('from database', items);
       })
+  })
+
+  app.get('/event/:id', (req,res) => {
+    console.log(req.params.id);
+    postCollection.find({_id: ObjectId(req.params.id)})
+    .toArray((err, items) => {
+      res.send(items);
+      console.log(items);
+    })
   })
 
   app.post("/addEvent", (req, res) => {
